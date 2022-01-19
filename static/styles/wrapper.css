@@ -1,0 +1,11 @@
+.wrapper {
+    width: 40%;
+    top: 20%;
+    left: 30%;
+    position: absolute;
+}
+
+body {
+    background-image: url("../assets/background_2.jpg");
+    background-size: cover
+}
