@@ -4,7 +4,25 @@
 {% endblock %}
 
 {% block bodycontent %}
-    <h1>
-        login
-    </h1>
+    <div class="wrapper">
+        <div class="card">
+            <h5 class="card-header"><span>Log in</span></h5>
+            <div class="card-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="loginLogin" class="form-label">Login</label>
+                        <input type="text" class="form-control" id="loginLogin"
+                               placeholder="Your login" name="login" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="loginPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="loginPassword"
+                               placeholder="Your password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-secondary mb-3">Log in</button>
+                </form>
+                <a href="/login">Don't have an account? Register!</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

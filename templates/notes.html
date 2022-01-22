@@ -1,0 +1,25 @@
+{% extends "wrapper.html" %}
+
+{% block headcontent %}
+    <link rel="stylesheet" href="/static/styles/notes.css"/>
+{% endblock %}
+
+{% block bodycontent %}
+    <div class="note-wrapper">
+        <div class="card">
+            <h5 class="card-header"><span>
+                {% if type == "my" %}
+                    Notes created by me
+                {% else %}
+                    Notes shared with me
+                {% endif %}
+            </span></h5>
+            <div class="card-body">
+            </div>
+        </div>
+        <div>
+
+        </div>
+    </div>
+
+{% endblock %}

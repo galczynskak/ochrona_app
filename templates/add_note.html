@@ -1,0 +1,70 @@
+{% extends "wrapper.html" %}
+
+{% block headcontent %}
+    <link rel="stylesheet" href="/static/styles/add_note.css"/>
+    <script src="/static/scripts/add_note.js"></script>
+{% endblock %}
+
+{% block bodycontent %}
+    <div class="new-note-wrapper mx-auto">
+        <div class="card">
+            <h5 class="card-header"><span>Add a new note</span></h5>
+            <div class="card-body">
+                <form class="row">
+                    <div class="col">
+                        <div class="mb-3">
+                            <label for="newNoteTitle" class="form-label">Note title</label>
+                            <input type="text" class="form-control" id="newNoteTitle"
+                                   placeholder="Note title" name="noteTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="noteContent" class="form-label">Note</label>
+                            <textarea class="form-control" id="noteContent" rows="5" required></textarea>
+                        </div>
+                        <div>
+                            Zasady edycji markdowna tutaj
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div>Privacy settings</div>
+                        <div class="row" style="padding-left:10px;">
+                            <div class="form-check col">
+                                <input class="form-check-input" type="radio" checked name="notePrivacy" id="privacyPrivate">
+                                <label class="form-check-label" for="privacyPrivate">Private</label>
+                            </div>
+                            <div class="form-check col">
+                                <input class="form-check-input" type="radio" name="notePrivacy" id="privacyRestricted">
+                                <label class="form-check-label" for="privacyRestricted">Restricted</label>
+                            </div>
+                            <div class="form-check col">
+                                <input class="form-check-input" type="radio" name="notePrivacy" id="privacyPublic">
+                                <label class="form-check-label" for="privacyPublic">Public</label>
+                            </div>
+                        </div>
+                        <div class="mb-3" id="recipientsInput" style="display: none">
+                            <label for="noteRecipients" class="form-label">Note recipients</label>
+                            <input type="text" class="form-control" id="noteRecipients"
+                                   placeholder="Recipients" name="noteRecipients" aria-describedby="recipientsHelp">
+                            <div id="recipientsHelp" class="form-text">Please provide recipients' logins, separated by comma.</div>
+                        </div>
+                        <div class="row">
+                            <div class="col my-3">
+                                <label for="notePassword" class="form-label">Note password (optional)</label>
+                                <input type="password" class="form-control" id="notePassword"
+                                       placeholder="Note password" name="notePassword">
+                            </div>
+                            <div class="col my-3">
+                                <label for="notePasswordRepeated" class="form-label">Repeat note password</label>
+                                <input type="password" class="form-control" id="notePasswordRepeated"
+                                       placeholder="Note password again" name="notePasswordRepeated">
+                            </div>
+                        </div>
+                        <div class="d-flex">
+                            <button type="submit" class="btn btn-secondary mx-auto mb-3">Add note</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,10 +1,42 @@
 {% extends "wrapper.html" %}
 
 {% block headcontent %}
+    <script src="/static/scripts/register.js"></script>
+    <link rel="stylesheet" href="/static/styles/register.css"/>
 {% endblock %}
 
 {% block bodycontent %}
-    <h1>
-        register
-    </h1>
+    <div class="wrapper">
+        <div class="card">
+            <h5 class="card-header"><span>Register</span></h5>
+            <div class="card-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="registerEmail" aria-describedby="emailHelp"
+                        placeholder="Your email address" required name="email">
+                        <div id="emailHelp" class="form-text">Please provide a unique email address.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerLogin" class="form-label">Login</label>
+                        <input type="text" class="form-control" id="registerLogin"
+                        placeholder="Your login" name="login" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="registerPassword"
+                        placeholder="Your password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPasswordRepeated" class="form-label">Repeat password</label>
+                        <input type="password" class="form-control" id="registerPasswordRepeated"
+                        placeholder="Your password again" name="passwordRepeated" required>
+                    </div>
+                    <p id="passwordStrength" class="weak"></p>
+                    <button type="submit" class="btn btn-secondary mb-3">Register</button>
+                </form>
+                <a href="/login">Already have an account? Log in!</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

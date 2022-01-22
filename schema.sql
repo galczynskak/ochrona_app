@@ -14,7 +14,7 @@ create table if not exists sessions (
     session_token_hash text,
     foreign key(user_id) references users(id),
     foreign key(user_name) references users(login)
-)
+);
 
 create table if not exists notes (
     id integer primary key autoincrement,

@@ -1,0 +1,11 @@
+#passwordStrength.weak {
+    color: red;
+}
+
+#passwordStrength.moderate {
+    color: goldenrod;
+}
+
+#passwordStrength.strong {
+    color: green;
+}
