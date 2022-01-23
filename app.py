@@ -141,7 +141,7 @@ def register():
                     host = request.remote_addr
                 register_user(email, login, password, host)
                 res = make_response(jsonify({
-                    'message': 'Registered successfully, now you can log in'
+                    'message': 'Registered successfully, now you will be redirected to log in'
                 }), 200)
                 return res
             except Exception as e:

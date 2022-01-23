@@ -5,3 +5,9 @@
     right: 0;
     top: 20%
 }
+
+.markdown_table {
+    width: 100%;
+    text-align: center;
+    border: lightgrey 1px solid;
+}

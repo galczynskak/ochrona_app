@@ -7,10 +7,16 @@
             <div class="card-body">
                 Projekt zaliczeniowy dla przedmiotu Ochrona Danych.
                 <hr/>
+                {% if user %}
+                Currently logged in as:
+                {% else %}
+
                 <div class="d-grid gap-2 col-6 mx-auto">
                     <a href="/register" class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">Register</a>
                     <a href="/login" class="btn btn-outline-secondary" tabindex="-1" role="button" aria-disabled="true">Log in</a>
                 </div>
+                {% endif %}
+
             </div>
         </div>
     </div>

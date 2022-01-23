@@ -11,6 +11,9 @@ const submitRegistration = async function(event, form) {
         if (res && res.message) {
             flashAlert(res.message, "success")
         }
+        window.setTimeout(function(){
+            window.location.pathname = "/login"
+        }, 3000);
     } catch (exception) {
         flashAlert(exception.message);
     }
