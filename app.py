@@ -5,7 +5,6 @@ from time import sleep
 from methods import *
 
 load_dotenv()
-
 app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_COOKIE_SECURE'] = True
@@ -29,9 +28,38 @@ def init_db() -> None:
         db.commit()
 
 
+@app.before_request
+def check_auth():
+    try:
+        token = request.headers['Cookie']
+        token = token.replace('token=', '')
+    except Exception:
+        token = ''
+    g.user, token = parse_token(token)
+    try:
+        if not check_session_registered(token, g.user['login']):
+            g.user = {}
+    except Exception as e:
+        pass
+
+
+@app.after_request
+def modify_header_security(res):
+    res.headers['Server'] = 'Obviously there is a server, it\'s confidential though'
+    return res
+
+
+@app.teardown_appcontext
+def close_connection(exception):
+    db = getattr(g, '_database', None)
+    if db is not None:
+        db.close()
+
+
 @app.route('/')
 def home():
-    return render_template("home.html")
+    print(g.user)
+    return render_template("home.html", user=g.user)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -152,42 +180,14 @@ def register():
                 return res
 
 
-
 @app.route('/add_note')
 def add_note():
     return render_template("add_note.html")
 
+
 @app.route('/notes/<type>')
 def show_notes(type):
     return render_template("notes.html", type=type)
-
-
-@app.before_request
-def check_auth():
-    try:
-        token = request.headers['Cookie']
-        token = token.replace('token=', '')
-    except Exception:
-        token = ''
-    g.user, token = parse_token(token)
-    try:
-        if not check_session_registered(token, g.user['login']):
-            g.user = {}
-    except Exception as e:
-        pass
-
-
-@app.after_request
-def modify_header_security(res):
-    res.headers['Server'] = 'Obviously there is a server, it\'s confidential though'
-    return res
-
-
-@app.teardown_appcontext
-def close_connection(exception):
-    db = getattr(g, '_database', None)
-    if db is not None:
-        db.close()
 
 
 if __name__ == '__main__':

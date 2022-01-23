@@ -5,11 +5,13 @@ import os
 import jwt
 import passlib.hash
 from flask import jsonify, make_response, g
+from dotenv import load_dotenv
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 
-JWT_SECRET = os.getenv("JWP_SECRET")
+load_dotenv()
+JWT_SECRET = os.getenv("JWT_SECRET")
 JWT_EXP_TIME = os.getenv("JWT_EXP_TIME")
 
 
@@ -18,9 +20,10 @@ def register_user_session(login, token, current_host):
     try:
         with sqlite3.connect('database.db') as tran:
             cursor = tran.cursor()
-            cursor.execute('insert into sessions (user_name, session_token_hash) values (?,?)', [login, token_hash])
             cursor.execute('select * from users where login = ?', [login])
             user = cursor.fetchone()
+            user_id = user[0]
+            cursor.execute('insert into sessions (user_id, user_name, session_token_hash) values (?, ?,?)', [user_id, login, token_hash])
             if current_host not in user[5]:
                 new_hosts = user[5] + f'{current_host};'
                 tran.cursor().execute('update users set bound_hosts=(?) where login = ?', [new_hosts, login])
@@ -97,13 +100,15 @@ def parse_token(token):
             g.user = decoded
         else:
             release_session(decoded['login'])
+            g.user = {}
     else:
         g.user = {}
-        return g.user, token
+    return g.user, token
 
 
 def decode_jwt_data(token):
     try:
+        a = JWT_SECRET
         payload = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
         return payload
     except Exception as e:
@@ -116,7 +121,7 @@ def encode_jwt_data(login, master_password):
             'login': login,
             'master_password': master_password,
             'last_login': datetime.now().isoformat(),
-            'exp': int((datetime.now() + timedelta(sencods=int(JWT_EXP_TIME))).timestamp())
+            'exp': int((datetime.now() + timedelta(seconds=int(JWT_EXP_TIME))).timestamp())
         }, JWT_SECRET, algorithm='HS256')
         return token
     except Exception as e:

@@ -8,8 +8,8 @@
     <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-    <script src="/static/scripts/wrapper.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
+    <script src="/static/scripts/wrapper.js"></script>
     <link rel="stylesheet" href="/static/styles/wrapper.css"/>
     <script>
         $(document).ready(function(){
@@ -30,30 +30,29 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <ul class="navbar-nav">
                     {% if user %}
-
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            My notes
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/notes/my">Created by me</a></li>
+                            <li><a class="dropdown-item" href="/notes/shared">Shared with me</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/add_note" class="btn btn-light" tabindex="-1" role="button" aria-disabled="true">Add note</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav navbar-right ms-auto">
+                    <li class="nav-right">
+                        <a href="/" class="btn btn-outline-light mx-3" tabindex="-1" role="button" aria-disabled="true">Logout</a>
+                    </li>
                     {% else %}
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="/login">Log in</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="/register">Register</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                My notes
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="/notes/my">Created by me</a></li>
-                                <li><a class="dropdown-item" href="/notes/shared">Shared with me</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/add_note" class="btn btn-light" tabindex="-1" role="button" aria-disabled="true">Add note</a>
-                        </li>
-                </ul>
-                <ul class="navbar-nav navbar-right ms-auto">
-                        <li class="nav-right">
-                            <a href="/" class="btn btn-outline-light mx-3" tabindex="-1" role="button" aria-disabled="true">Logout</a>
                         </li>
                     {% endif %}
                 </ul>
