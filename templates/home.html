@@ -1,5 +1,9 @@
 {% extends 'wrapper.html' %}
 
+{% block headcontent %}
+    <script src="/static/scripts/home.js"></script>
+{% endblock %}
+
 {% block bodycontent %}
     <div class="wrapper">
         <div class="card">
@@ -8,7 +12,8 @@
                 Projekt zaliczeniowy dla przedmiotu Ochrona Danych.
                 <hr/>
                 {% if user %}
-                Currently logged in as:
+                <p>Currently logged in as: <b>{{user.login}}</b></p>
+                <p>You have created {{no_created}} notes and has been shared {{no_shared}} notes.</p>
                 {% else %}
 
                 <div class="d-grid gap-2 col-6 mx-auto">

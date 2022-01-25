@@ -1,14 +1,25 @@
-from dotenv import load_dotenv
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, make_response, jsonify
 from time import sleep
+import ssl
+from OpenSSL import SSL
 
 from methods import *
+from notes import *
+from login import *
+from register import *
+from logout import *
 
 load_dotenv()
 app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_COOKIE_SECURE'] = True
 app.secret_key = os.getenv("SECRET_KEY")
+
+# context = SSL.Context(SSL.TLSv1_2_METHOD)
+# context.use_privatekey_file('ochrona.key')
+# context.use_certificate_file('ochrona.crt')
+# context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+# context.load_cert_chain('ochrona.crt', 'ochrona.key')
 
 
 def init_db() -> None:
@@ -58,15 +69,38 @@ def close_connection(exception):
 
 @app.route('/')
 def home():
-    print(g.user)
-    return render_template("home.html", user=g.user)
+    if g.user != {}:
+        created = get_no_created(g.user)[0]
+        shared = get_no_shared(g.user)[0]
+    else:
+        created = 0
+        shared = 0
+    return render_template("home.html", user=g.user, no_created=created, no_shared=shared)
+
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    if request.method == 'GET':
+        if g.user != {}:
+            release_session(g.user['login'])
+            g.user = {}
+            res = make_response(jsonify({
+                'message': 'Logged out successfully'
+            }), 301)
+        else:
+            res = make_response(jsonify({
+                'message': 'You are already logged out apparently'
+            }), 301)
+        res.headers['Location'] = "/"
+        res.set_cookie('token', '', expires=0)
+        return res
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def log_in():
     if request.method == 'GET':
         if g.user != {}:
-            return redirect("/user")
+            return redirect("/")
         else:
             return render_template("login.html", user=g.user)
     elif request.method == 'POST':
@@ -180,16 +214,100 @@ def register():
                 return res
 
 
-@app.route('/add_note')
+@app.route('/add_note', methods=['GET', 'POST'])
 def add_note():
-    return render_template("add_note.html")
+    if request.method == 'GET':
+        if g.user == {}:
+            return redirect('/')
+        else:
+            return render_template("add_note.html", user=g.user)
+    elif request.method == 'POST':
+        data = request.get_json()
+        note_title = data['noteTitle']
+        note_content = data['null']
+        note_privacy = data['radio_value']
+        note_password = data['notePassword']
+        note_password_repeated = data['notePasswordRepeated']
+        note_recipients = data['noteRecipients']
+
+        if note_title:
+            if note_content:
+                if note_privacy == 'privacyRestricted' and note_recipients == "":
+                    res = make_response(jsonify({
+                        'message': 'Provide recipients for restricted note'
+                    }), 403)
+                    res.headers['Content-Type'] = "application/json"
+                    return res
+                elif note_privacy == 'privacyRestricted' and note_recipients != "":
+                    privacy_setting = note_recipients
+                elif note_privacy == 'privacyPrivate':
+                    privacy_setting = 'private'
+                elif note_privacy == 'privacyPublic':
+                    privacy_setting = 'public'
+
+                if note_password:
+                    if (note_password != note_password_repeated):
+                        res = make_response(jsonify({
+                            'message': 'Passwords need to match'
+                        }), 403)
+                        res.headers['Content-Type'] = "application/json"
+                        return res
+                insert_note(g.user, note_title, note_content, privacy_setting, note_password)
+                res = make_response(jsonify({
+                    'message': 'Note successfully added, you will be redirected to your notes'
+                }), 200)
+                res.headers['Content-Type'] = "application/json"
+                return res
+            else:
+                res = make_response(jsonify({
+                    'message': 'Note content required'
+                }), 403)
+                res.headers['Content-Type'] = "application/json"
+                return res
+        else:
+            res = make_response(jsonify({
+                'message': 'Note title required'
+            }), 403)
+            res.headers['Content-Type'] = "application/json"
+            return res
 
 
-@app.route('/notes/<type>')
-def show_notes(type):
-    return render_template("notes.html", type=type)
+@app.route('/notes/<note_type>', methods=['GET'])
+def show_notes(note_type):
+    if g.user != {}:
+        if note_type == "my":
+            selected_notes = get_my_notes(g.user)
+        elif note_type == "shared":
+            selected_notes = get_shared_notes(g.user)
+        return render_template("notes.html", type=note_type, user=g.user, notes=selected_notes)
+    else:
+        return redirect('/')
+
+
+@app.route('/note/auth', methods=['POST'])
+def auth_note():
+    data = request.get_json()
+
+    note_id = data['noteId']
+    note_password = data["notePassword"]
+    note = get_note_content(note_id, note_password)
+
+    if not note:
+        res = make_response(jsonify({
+            'message': 'Note password incorrect'
+        }), 403)
+        res.headers['Content-Type'] = "application/json"
+        return res
+    else:
+        res = make_response(jsonify({
+            'content': note
+        }), 200)
+        res.headers['Content-Type'] = "application/json"
+        return res
+
 
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True)
+    # context = ('ochrona.crt', 'ochrona.key')
+    app.run(debug=True, ssl_context='adhoc')

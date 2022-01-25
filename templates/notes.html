@@ -17,24 +17,45 @@
             </span></h5>
         </div>
     </div>
-    <div class="note-wrapper">
-        <div class="card">
-            <h5 class="card-header"><span>Note title</span></h5>
-            <div class="card-body">
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-            </div>
-            <div class="card-footer">
-                <button type="button" class="btn btn-outline-secondary mx-1" data-bs-toggle="popover" data-bs-placement="bottom" style="float: right"
-                            title="Note preview" data-bs-content="And here's some amazing content. It's very engaging. Right?"><i class="bi bi-people-fill"></i></button>
-                <button type="button" class="btn btn-outline-secondary mx-1" data-bs-toggle="popover" data-bs-placement="bottom" style="float: right"
-                        title="Note preview" data-bs-content="And here's some amazing content. It's very engaging. Right?"><i class="bi bi-globe2"></i></button>
-                <button type="button" class="btn btn-outline-secondary mx-1" data-bs-toggle="popover" data-bs-placement="bottom" style="float: right"
-                        title="Note preview" data-bs-content="And here's some amazing content. It's very engaging. Right?"><i class="bi bi-lock-fill"></i></button>
-                <button type="button" class="btn btn-outline-secondary mx-1" data-bs-toggle="popover" data-bs-placement="bottom" style="float: right"
-                        title="Note preview" data-bs-content="And here's some amazing content. It's very engaging. Right?"><i class="bi bi-shield-lock"></i></button>
+    {% if notes %}
+        {% for note in notes %}
+        <div class="note-wrapper">
+            <div class="card">
+                <h5 class="card-header"><span>{{ note[2]|striptags }}</span></h5>
+                <div class="card-body">
+                    {% if note[5] %}
+                    <form>
+                        <div class="mb-3">
+                            <label for="notePassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="notePassword"
+                                   placeholder="Note password" name="notePassword" required>
+                        </div>
+                        <div class="mb-3 d-none">
+                            <input type="text" class="form-control" id="noteId"
+                                   name="noteId" value="{{note[0]}}" required>
+                        </div>
+                        <button type="submit" class="btn btn-secondary mb-3">Show note</button>
+                    </form>
+                    {% else %}
+                    {{ note[3]|striptags }}
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    {% if note[4] == 'all' %}
+                        <button type="button" class="btn btn-outline-secondary mx-1" data-bs-toggle="popover" data-bs-placement="bottom" style="float: right"
+                            title="Note details" data-bs-content="Note created by user: {{ note [1] }}. Note shared as public."><i class="bi bi-globe2"></i></button>
+                    {% elif note[4] == note[1] %}
+                    <button type="button" class="btn btn-outline-secondary mx-1" data-bs-toggle="popover" data-bs-placement="bottom" style="float: right"
+                            title="Note details" data-bs-content="Note created by user: {{ note [1] }}. Note shared as private (only visible to the owner)."><i class="bi bi-lock-fill"></i></button>
+                    {% else %}
+                    <button type="button" class="btn btn-outline-secondary mx-1" data-bs-toggle="popover" data-bs-placement="bottom" style="float: right"
+                            title="Note details" data-bs-content="Note created by user: {{ note [1] }}. Note shared as restricted to users: {{ note[4] }}."><i class="bi bi-people-fill"></i></button>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
-    </div>
+        {% endfor %}
+    {% endif %}
 
 {% endblock %}

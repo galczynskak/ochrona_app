@@ -8,7 +8,7 @@ create table if not exists users (
 );
 
 create table if not exists sessions (
-    id uuid primary key,
+    id integer primary key autoincrement,
     user_id id not null,
     user_name text not null,
     session_token_hash text,
@@ -18,9 +18,10 @@ create table if not exists sessions (
 
 create table if not exists notes (
     id integer primary key autoincrement,
-    owner_id integer not null,
+    owner_login text not null,
+    title text not null,
     content text not null,
     allowed_viewers text,                       -- tablica użytkowników dla których dostępne wyświetlanie (w ustawieniu private puste, dla public "all")
     note_password text, -- hash
-    foreign key(owner_id) references users(id)
+    foreign key(owner_login) references users(login)
 );

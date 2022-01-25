@@ -11,7 +11,9 @@ const handleLoginSubmit = async(event, form) => {
         if (res.message) {
             flashAlert(res.message, "success")
         }
-        window.location.pathname = "/"
+        window.setTimeout(function(){
+            window.location.pathname = "/"
+        }, 500);
     } catch (e) {
         flashAlert(e.message)
     }

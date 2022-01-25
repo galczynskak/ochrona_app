@@ -1,5 +1,5 @@
 const getFormValues = (form) => {
-    let inputArray = [...form.querySelectorAll("input"), ...form.querySelectorAll("select")];
+    let inputArray = [...form.querySelectorAll("input"), ...form.querySelectorAll("select"), ...form.querySelectorAll("textarea")];
     let res = {}
     inputArray.forEach((item) => {
         res = {...res, [item.getAttribute("name")]: item.value}
@@ -30,4 +30,27 @@ const flashAlert = (msg, variant= "danger") => {
     setTimeout( () =>{
         alert.hidden=true;
     }, 3000)
+}
+
+const handleLogoutClick = async (e) => {
+    e.preventDefault();
+    try {
+        let res = await performLogout();
+        if (res && res.message) {
+            flashAlert(res.message, "success")
+        }
+    } finally {
+        document.cookie = ""
+        window.setTimeout(function(){
+            window.location.pathname = "/"
+        }, 1000);
+    }
+};
+
+const performLogout = async () => {
+    const url = "/logout";
+    const res = await fetch(url, {
+        method: 'GET'
+    });
+    return await res.json();
 }
